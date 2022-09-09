@@ -16,7 +16,6 @@ MainWindow::MainWindow(QWidget *parent)
         str_list.push_back(QString("192.168.3.32\ntest%1").arg(i));
     }
 
-    qDebug() << str_list;
     ui->comboBoxB->setRemovableItems(str_list);
 }
 

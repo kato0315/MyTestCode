@@ -57,7 +57,6 @@ void MyComboBox::setRemovableItems(const QStringList &items)
         });
     }
 
-
 }
 
 
