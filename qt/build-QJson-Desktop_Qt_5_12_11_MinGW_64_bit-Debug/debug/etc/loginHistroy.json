@@ -1,0 +1,34 @@
+[
+    {
+        "Account": "pub1",
+        "IP": "192.168.3.32",
+        "Vm": [
+            {
+                "Name": "abc",
+                "VmAccount": "yl",
+                "VmPassword": "2"
+            },
+            {
+                "Name": "test3",
+                "VmAccount": "cccc",
+                "VmPassword": "ddd"
+            }
+        ]
+    },
+    {
+        "Account": "zhang",
+        "IP": "a.ylserver.com:4443",
+        "Vm": [
+            {
+                "Name": "abc",
+                "VmAccount": "yl",
+                "VmPassword": "2"
+            },
+            {
+                "Name": "test3",
+                "VmAccount": "cccc",
+                "VmPassword": "ddd"
+            }
+        ]
+    }
+]

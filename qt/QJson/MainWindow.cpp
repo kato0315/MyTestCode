@@ -18,9 +18,9 @@ MainWindow::MainWindow(QWidget *parent)
     deleteLoginHistroy("192.168.3.32", "pub3");
     qDebug() << readLoginHistroy();*/
     WindowsVmInfo winInfo;
-    winInfo.vmName = "abc";
-    winInfo.account = "yl";
-    winInfo.password = "1";
+    winInfo.vmName = "test3";
+    winInfo.account = "cccc";
+    winInfo.password = "ddd";
 
     writeWindowsVmInfo("192.168.3.32", "pub1", winInfo);
     writeWindowsVmInfo("a.ylserver.com:4443", "zhang", winInfo);
@@ -123,34 +123,27 @@ void MainWindow::writeWindowsVmInfo(QString IP, QString account, WindowsVmInfo w
 {
     QString filePath = QCoreApplication::applicationDirPath() + "/etc/loginHistroy.json";
     QJsonDocument document = readJsonDocument(filePath);
-    QJsonArray loginArray, vmArray;
-    QJsonObject loginObject = newLoginHistroy(IP, account);
-    QJsonObject vmObject = newVmObject(winInfo);
+    QJsonArray loginArray;
+    //QJsonObject vmObject = newVmObject(winInfo);
 
     if (!document.isNull()) {
         loginArray = document.array();
         for (QJsonArray::Iterator it = loginArray.begin(); it != loginArray.end(); it++) {
             QJsonObject object = it->toObject();
-            loginArray.removeAt(it.i);
-
             if ((object.value("IP").toString() == IP) && (object.value("Account").toString() == account)) {
-                vmArray = object.value("Vm").toArray();
-
-                for (QJsonArray::Iterator it1 = vmArray.begin(); it1 != vmArray.end(); it1++) {
-                    QJsonObject object = it1->toObject();
-                    if (object.value("Name").toString() == winInfo.vmName) {
-                        vmArray.removeAt(it1.i);
-                    }
-                }
-                vmArray.append(vmObject);
-
-                object.remove("Vm");
-                object.insert("Vm",vmArray);
+                //找到对应的账号,移除对应object
+                loginArray.removeAt(it.i);
+                qDebug () << "found account";
+                QJsonObject modifiedObject = modifyVmInfo(object, winInfo);
+                //修改object后，添加object，退出循环
+                loginArray.append(modifiedObject);
+                break;
             }
+
         }
 
     }
-
+    qDebug() << "write window info:" << loginArray;
     writeJsonDocument(filePath, loginArray);
 }
 
@@ -205,4 +198,26 @@ QJsonObject MainWindow::newVmObject(WindowsVmInfo winInfo)
     vmObject.insert("VmPassword", winInfo.password);
 
     return vmObject;
+}
+
+QJsonObject MainWindow::modifyVmInfo(QJsonObject object, WindowsVmInfo winInfo)
+{
+    QJsonObject vmObject = newVmObject(winInfo);
+    QJsonArray vmArray = object.value("Vm").toArray();
+    qDebug() << "object:" << object;
+    qDebug() << "vmArray:" << vmArray.count();
+    object.remove("Vm");
+    for (QJsonArray::Iterator it1 = vmArray.begin(); it1 != vmArray.end(); it1++) {
+        QJsonObject rmObject = it1->toObject();
+        //qDebug() << "object:" << object;
+        if (rmObject.value("Name").toString() == winInfo.vmName) {
+            vmArray.removeAt(it1.i);
+            break;
+        }
+    }
+    vmArray.append(vmObject);
+    object.insert("Vm",vmArray);
+    qDebug() << "modify vm info:"<< object;
+
+    return object;
 }

@@ -39,6 +39,7 @@ private:
     void writeJsonDocument(QString filePath, QJsonArray array);
     QJsonObject newLoginHistroy(QString IP, QString account);
     QJsonObject newVmObject(WindowsVmInfo winInfo);
+    QJsonObject modifyVmInfo(QJsonObject object, WindowsVmInfo winInfo);
 private:
     Ui::MainWindow *ui;
 };
